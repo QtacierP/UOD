@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 import random
+import glob
+from tqdm import tqdm
+
 
 class_map = {   0 : 'speed limit 20 (prohibitory)',
                 1: 'speed limit 30 (prohibitory)',
@@ -65,7 +68,7 @@ def process_gt(str_gt):
         gt[img_name]['label'] = int(label)
     return gt
 
-def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_id=0):
+def covert_to_coco(gt, split_list, output_image_dir, output_annotation_dir, base_annotation_id=0):
     annotations = {}
     annotations['images'] = []
     annotations['annotations'] = []
@@ -74,7 +77,7 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
     annotation_dir, _ = os.path.split(output_annotation_dir)
     if not os.path.exists(annotation_dir):
         os.makedirs(annotation_dir)
-    for annotation_id, one_gt in enumerate(gt):
+    for annotation_id, one_gt in tqdm(enumerate(gt)):
         img_name, bbox_1, bbox_2, bbox_3, bbox_4, label = one_gt.split(';')
 
         id = img_name.split('.')[0]
@@ -82,6 +85,8 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
 
         img_path = os.path.join(original_data_dir, img_name)
         img_path = os.path.abspath(img_path)
+        if img_path not in split_list:
+            continue
         img = plt.imread(img_path)
         h, w, c = img.shape
         one_annotation = {}
@@ -118,11 +123,13 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
 
 if __name__ == '__main__':
     random.seed(0)
+    img_list = glob.glob(os.path.join(os.path.abspath(original_data_dir), '*.ppm'))
+
     gt = np.loadtxt(original_gt_dir, dtype=str)
-    train_gt, test_gt = train_test_split(gt, test_size=0.2)
-    train_gt, val_gt = train_test_split(train_gt, test_size=0.2)
-    id, _ = covert_to_coco(train_gt, '../data/GTSDB/images/train', '../data/GTSDB/annotations/train/train.json')
-    id, _ = covert_to_coco(val_gt, '../data/GTSDB/images/val', '../data/GTSDB/annotations/val/val.json', id)
-    id, _ = covert_to_coco(test_gt, '../data/GTSDB/images/test', '../data/GTSDB/annotations/test/test.json', id)
+    train_list, test_list = train_test_split(img_list, test_size=0.2)
+    train_list, val_list = train_test_split(train_list, test_size=0.2)
+    id, _ = covert_to_coco(gt, train_list, '../data/GTSDB/images/train', '../data/GTSDB/annotations/train/train.json')
+    id, _ = covert_to_coco(gt, val_list, '../data/GTSDB/images/val', '../data/GTSDB/annotations/val/val.json', id)
+    id, _ = covert_to_coco(gt, test_list, '../data/GTSDB/images/test', '../data/GTSDB/annotations/test/test.json', id)
 
 
