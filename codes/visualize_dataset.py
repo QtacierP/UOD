@@ -33,6 +33,18 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
+
+def retrieve_data_cfg(config_path, skip_type):
+    cfg = Config.fromfile(config_path)
+    train_data_cfg = cfg.data.train
+    train_data_cfg['pipeline'] = [
+        x for x in train_data_cfg.pipeline if x['type'] not in skip_type
+    ]
+
+    return cfg
+
+
 def main():
     args = parse_args()
     cfg = retrieve_data_cfg(args.config, args.skip_type)
@@ -40,7 +52,6 @@ def main():
     dataset = build_dataset(cfg.data.train)
     progress_bar = mmcv.ProgressBar(len(dataset))
     for item in dataset:
-        print(item)
         filename = os.path.join(args.output_dir,
                                 Path(item['filename']).name
                                 ) if args.output_dir is not None else None

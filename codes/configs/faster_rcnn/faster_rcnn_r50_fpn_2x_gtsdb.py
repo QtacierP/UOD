@@ -2,12 +2,10 @@
 
 _base_ = [
     '../_base_/models/faster_rcnn_r50_fpn.py',
-    '../_base_/datasets/gtsdb.py',
-    '../_base_/schedules/schedule_2x.py', '../_base_/default_runtime.py'
+    '../_base_/datasets/gtsdb.py', '../_base_/default_runtime.py'
 ]
 
 model = dict(
-    type='FasterRCNN',
     pretrained=None,
     roi_head=dict(
         type='StandardRoIHead',
@@ -35,16 +33,24 @@ model = dict(
 
 # optimizer
 # lr is set for a batch size of 8
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='Adam', lr=0.001)
 optimizer_config = dict(grad_clip=None)
+
 # learning policy
-lr_config = dict(
+'''lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
     # [7] yields higher performance than [6]
-    step=[7])
+    step=[7])'''
+
+lr_config = dict(
+    policy='CosineAnnealing',
+    warmup='linear',
+    warmup_iters=1000,
+    warmup_ratio=1.0 / 10,
+    min_lr_ratio=1e-5)
 
 total_epochs = 40  # actual epoch = 8 * 8 = 64
 log_config = dict(interval=100,   hooks=[
@@ -52,4 +58,4 @@ log_config = dict(interval=100,   hooks=[
         dict(type='TensorboardLoggerHook')
     ])
 
-load_from = 'http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'
+#load_from = 'http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'

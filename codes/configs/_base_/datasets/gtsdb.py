@@ -8,7 +8,7 @@ class_map = {   0 : 'speed limit 20 (prohibitory)',
                 7: 'speed limit 100 (prohibitory)',
                 8: 'speed limit 120 (prohibitory)',
                 9: 'no overtaking (prohibitory)',
-                10: 'no overtaking (trucks) (prohibitory)',
+                10: 'no overtaking trucks (prohibitory)',
                 11: 'priority at next intersection (danger)',
                 12: 'priority road (other)',
                 13: 'give way (other)',
@@ -39,8 +39,8 @@ class_map = {   0 : 'speed limit 20 (prohibitory)',
                 38: 'keep right (mandatory)',
                 39: 'keep left (mandatory)',
                 40: 'roundabout (mandatory)',
-                41: 'restriction ends (overtaking) (other)',
-                42: 'restriction ends (overtaking (trucks)) (other)'}
+                41: 'restriction ends overtaking (other)',
+                42: 'restriction ends overtaking-trucks (other)'}
 
 dataset_type = 'CoCoDataset'
 data_root = 'data/GTSDB/'
@@ -77,8 +77,13 @@ test_pipeline = [
 ]
 dataset_type = 'CocoDataset'
 classes = []
-for label in class_map.keys():
-    classes.append(class_map[label])
+for index in class_map.keys():
+    label = class_map[index]
+    label, superlabel = label.split('(')
+    print(label)
+    label = label[:-1]
+    superlabel = superlabel[:-1]
+    classes.append(label)
 
 classes = tuple(classes)
 data = dict(
@@ -93,7 +98,7 @@ data = dict(
     val=dict(
         type=dataset_type,
         classes=classes,
-        ann_file='../data/GTSDB/annotations/test/test.json',
+        ann_file='../data/GTSDB/annotations/val/val.json',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,

@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
+import random
 
 class_map = {   0 : 'speed limit 20 (prohibitory)',
                 1: 'speed limit 30 (prohibitory)',
@@ -17,7 +18,7 @@ class_map = {   0 : 'speed limit 20 (prohibitory)',
                 7: 'speed limit 100 (prohibitory)',
                 8: 'speed limit 120 (prohibitory)',
                 9: 'no overtaking (prohibitory)',
-                10: 'no overtaking (trucks) (prohibitory)',
+                10: 'no overtaking trucks (prohibitory)',
                 11: 'priority at next intersection (danger)',
                 12: 'priority road (other)',
                 13: 'give way (other)',
@@ -48,8 +49,8 @@ class_map = {   0 : 'speed limit 20 (prohibitory)',
                 38: 'keep right (mandatory)',
                 39: 'keep left (mandatory)',
                 40: 'roundabout (mandatory)',
-                41: 'restriction ends (overtaking) (other)',
-                42: 'restriction ends (overtaking (trucks)) (other)'}
+                41: 'restriction ends overtaking (other)',
+                42: 'restriction ends overtaking-trucks (other)'}
 
 
 original_data_dir = '../data/original_GTSDB/FullIJCNN2013'
@@ -75,6 +76,7 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
         os.makedirs(annotation_dir)
     for annotation_id, one_gt in enumerate(gt):
         img_name, bbox_1, bbox_2, bbox_3, bbox_4, label = one_gt.split(';')
+
         id = img_name.split('.')[0]
         bbox_1, bbox_2, bbox_3, bbox_4 = int(bbox_1), int(bbox_2), int(bbox_3), int(bbox_4)
 
@@ -102,7 +104,11 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
         annotations['annotations'].append(one_annotation['annotations'])
     annotations['categories'] = []
     for i in class_map.keys():
-        annotations['categories'].append({'id': i, 'name': class_map[i]})
+        label = class_map[i]
+        info = label.split('(')
+        label = info[0][:-1]
+        superlabel = info[1][:-1]
+        annotations['categories'].append({'id': i, 'name': label, "supercategory": superlabel})
     with open(output_annotation_dir, 'w') as f:
         json.dump(annotations, f)
     return annotation_id + base_annotation_id + 1, annotations
@@ -111,6 +117,7 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
 
 
 if __name__ == '__main__':
+    random.seed(0)
     gt = np.loadtxt(original_gt_dir, dtype=str)
     train_gt, test_gt = train_test_split(gt, test_size=0.2)
     train_gt, val_gt = train_test_split(train_gt, test_size=0.2)
