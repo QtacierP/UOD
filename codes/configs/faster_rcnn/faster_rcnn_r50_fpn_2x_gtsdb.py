@@ -46,6 +46,9 @@ lr_config = dict(
     # [7] yields higher performance than [6]
     step=[7])
 total_epochs = 8  # actual epoch = 8 * 8 = 64
-log_config = dict(interval=100)
+log_config = dict(interval=100,   hooks=[
+        dict(type='TextLoggerHook'),
+        dict(type='TensorboardLoggerHook')
+    ])
 
 load_from = 'http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'

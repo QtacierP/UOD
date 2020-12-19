@@ -59,6 +59,7 @@ train_pipeline = [
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
+
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -71,13 +72,14 @@ test_pipeline = [
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
+            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
         ])
 ]
 dataset_type = 'CocoDataset'
 classes = []
 for label in class_map.keys():
     classes.append(class_map[label])
+
 classes = tuple(classes)
 data = dict(
     samples_per_gpu=2,
@@ -91,11 +93,12 @@ data = dict(
     val=dict(
         type=dataset_type,
         classes=classes,
-        ann_file='../data/GTSDB/annotations/val/val.json',
+        ann_file='../data/GTSDB/annotations/test/test.json',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         classes=classes,
         ann_file='../data/GTSDB/annotations/test/test.json',
         pipeline=test_pipeline))
-evaluation = dict(interval=1, metric='bbox')
+
+evaluation = dict(interval=1, metric='mAP')

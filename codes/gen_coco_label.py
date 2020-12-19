@@ -77,9 +77,10 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
         img_name, bbox_1, bbox_2, bbox_3, bbox_4, label = one_gt.split(';')
         id = img_name.split('.')[0]
         bbox_1, bbox_2, bbox_3, bbox_4 = int(bbox_1), int(bbox_2), int(bbox_3), int(bbox_4)
+
         img_path = os.path.join(original_data_dir, img_name)
+        img_path = os.path.abspath(img_path)
         img = plt.imread(img_path)
-        os.system('cp {} {}'.format(img_path, output_image_dir))
         h, w, c = img.shape
         one_annotation = {}
         one_annotation['image'] = {}
@@ -88,14 +89,13 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
         one_annotation['image']['width'] = w
         one_annotation['image']['id'] = id
         one_annotation['annotations'] = {}
-        one_annotation['annotations']['image_id'] = id
-
         x, y = bbox_1, bbox_2
         bbox_h = bbox_4 - y
         bbox_w = bbox_3 - x
         one_annotation['annotations']['bbox'] = [x, y, bbox_w, bbox_h]
+        one_annotation['annotations']['image_id'] = id
         one_annotation['annotations']['category_id'] = int(label)
-        one_annotation['annotations']['area'] = 0
+        one_annotation['annotations']['area'] = bbox_h * bbox_w
         one_annotation['annotations']['iscrowd'] = 0
         one_annotation['annotations']['id'] = base_annotation_id + annotation_id
         annotations['images'].append(one_annotation['image'])
@@ -105,7 +105,7 @@ def covert_to_coco(gt, output_image_dir, output_annotation_dir, base_annotation_
         annotations['categories'].append({'id': i, 'name': class_map[i]})
     with open(output_annotation_dir, 'w') as f:
         json.dump(annotations, f)
-    return annotation_id, annotations
+    return annotation_id + base_annotation_id + 1, annotations
 
 
 
