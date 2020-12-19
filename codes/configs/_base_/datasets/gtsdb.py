@@ -72,7 +72,7 @@ test_pipeline = [
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
+            dict(type='Collect', keys=['img']),
         ])
 ]
 dataset_type = 'CocoDataset'
@@ -100,5 +100,4 @@ data = dict(
         classes=classes,
         ann_file='../data/GTSDB/annotations/test/test.json',
         pipeline=test_pipeline))
-
-evaluation = dict(interval=1, metric='mAP')
+evaluation = dict(interval=1, metric='bbox')
