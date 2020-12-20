@@ -49,10 +49,10 @@ You can use any model in MMDetection to implement the traffic light detecting ea
 
 
 
-| backbone                 | config                                                       | pre-trained model                                            | mAP    |
-| :----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------ |
-| Faster-RCNN-ResNet50-FPN | [config](https://github.com/QtacierP/UOD/blob/main/codes/configs/faster_rcnn/faster_rcnn_r50_fpn_2x_gtsdb.py) | [pre-trained weights](https://github.com/QtacierP/UOD/releases/download/Model/faster_rcnn_r50_fpn-fb4e1380.pth) | 0.5330 |
-| ......                   |                                                              |                                                              |        |
+| backbone                         | config                                                       | pre-trained model                                            | mAP    |
+| :------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------ |
+| Faster-RCNN-ResNet50-FPN         | [config](https://github.com/QtacierP/UOD/blob/main/codes/configs/faster_rcnn/faster_rcnn_r50_fpn_2x_gtsdb.py) | [pre-trained weights](https://github.com/QtacierP/UOD/releases/download/Model/faster_rcnn_r50_fpn-fb4e1380.pth) | 0.5210 |
+| Faster-RCNN-ResNeSt50-FPN-SyncBN | TODO                                                         | TODO                                                         | 0.5660 |
 
 
 
