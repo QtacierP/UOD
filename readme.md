@@ -34,7 +34,7 @@ CUDA_VISIBLE_DEVICES=6,7 python -m torch.distributed.launch --nproc_per_node=2 -
 For inference, just use demo.py !
 
 ```
-python demo.py --input_image ${IMAGE} --input_video ${VIDEO} --output {OUTPUT_FILE}
+python demo.py --input_image ${IMAGE} --input_video ${VIDEO} --output {OUTPUT_FILE} --load_from ${MODEL_PATH}
 ```
 
 Now, enjoy  your traffic light detecting playground!
@@ -43,28 +43,22 @@ Now, enjoy  your traffic light detecting playground!
 
 ## Model Zoo
 
-We only test Faster-RCNN-FPN-ResNet50 as baseline. Here, we provide the .json config and pre-trained model.
+We only test Faster-RCNN-FPN-ResNet50-FPN as baseline. Here, we provide the .json config and pre-trained model.
 
 You can use any model in MMDetection to implement the traffic light detecting easily! 
 
 
 
-| backbone             | config                                                       | pre-trained model |
-| :------------------- | ------------------------------------------------------------ | ----------------- |
-| Faster-RCNN-ResNet50 | [config] (https://github.com/QtacierP/UOD/blob/main/codes/configs/faster_rcnn/faster_rcnn_r50_fpn_2x_gtsdb.py) |                   |
-|                      |                                                              |                   |
-
-
-
-
+| backbone                 | config                                                       | pre-trained model                                            | mAP    |
+| :----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------ |
+| Faster-RCNN-ResNet50-FPN | [config](https://github.com/QtacierP/UOD/blob/main/codes/configs/faster_rcnn/faster_rcnn_r50_fpn_2x_gtsdb.py) | [pre-trained weights](https://github.com/QtacierP/UOD/releases/download/Model/faster_rcnn_r50_fpn-fb4e1380.pth) | 0.5330 |
+| ......                   |                                                              |                                                              |        |
 
 
 
 ## Next  Plan
 
 We should add custom uncertainty-head in model and uncertainty-aware loss function.
-
-
 
 ## Acknowledgement
 
