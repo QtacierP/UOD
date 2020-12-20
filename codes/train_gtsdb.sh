@@ -1,1 +1,0 @@
-python ./train.py ${CONFIG_FILE} [optional arguments]
