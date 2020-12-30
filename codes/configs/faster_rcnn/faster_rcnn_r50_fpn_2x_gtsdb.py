@@ -52,8 +52,8 @@ lr_config = dict(
     warmup_ratio=1.0 / 10,
     min_lr_ratio=1e-5)'''
 
-total_epochs = 40  # actual epoch = 8 * 8 = 64
-log_config = dict(interval=100,   hooks=[
+total_epochs = 100  # actual epoch = 8 * 8 = 64
+log_config = dict(interval=50,   hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook')
     ])

@@ -1,6 +1,7 @@
 from mmdet.apis import init_detector, inference_detector
 import mmcv
 import argparse
+from models.uncertanty import UncertaintyRoIHead, UncertaintyBoxHead, UncertaintyLoss, UncertaintyShared2FCBBoxHead
 
 parser = argparse.ArgumentParser(description='Train a detector')
 parser.add_argument('config', help='train config file path')
