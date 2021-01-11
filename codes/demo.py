@@ -2,6 +2,8 @@ from mmdet.apis import init_detector, inference_detector
 import mmcv
 import argparse
 from models.uncertanty import UncertaintyRoIHead, UncertaintyBoxHead, UncertaintyLoss, UncertaintyShared2FCBBoxHead
+import cv2
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='Train a detector')
 parser.add_argument('config', help='train config file path')
@@ -32,6 +34,14 @@ if args.input_image != '':
 elif args.input_video != '':
     # test a video and show the results
     video = mmcv.VideoReader(args.input_video)
-    for frame in video:
+    frames = []
+    for frame in tqdm(video):
         result = inference_detector(model, frame)
-        model.show_result(frame, result, wait_time=1, out_file=args.output)
+        frames.append(model.show_result(frame, result, wait_time=1))
+    vidFilename = args.output
+    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
+    writer = cv2.VideoWriter(vidFilename, fourcc, video.fps, video.resolution)
+    for frame in tqdm(frames):
+        writer.write(frame.astype('u1'))
+    writer.release()
+    

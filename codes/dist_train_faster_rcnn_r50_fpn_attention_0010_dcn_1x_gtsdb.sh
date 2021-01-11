@@ -1,1 +1,0 @@
-CUDA_VISIBLE_DEVICES=6,7 python -m torch.distributed.launch --nproc_per_node=2 --master_port=20001 ./train.py ./configs/empirical_attention/faster_rcnn_r50_fpn_attention_0010_dcn_1x_gtsdb.py --launcher pytorch

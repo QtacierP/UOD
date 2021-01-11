@@ -84,7 +84,7 @@ def covert_to_coco(gt, split_list, output_image_dir, output_annotation_dir, base
         bbox_1, bbox_2, bbox_3, bbox_4 = int(bbox_1), int(bbox_2), int(bbox_3), int(bbox_4)
 
         img_path = os.path.join(original_data_dir, img_name)
-        img_path = os.path.abspath(img_path)
+
         if img_path not in split_list:
             continue
         img = plt.imread(img_path)
@@ -123,7 +123,7 @@ def covert_to_coco(gt, split_list, output_image_dir, output_annotation_dir, base
 
 if __name__ == '__main__':
     random.seed(0)
-    img_list = glob.glob(os.path.join(os.path.abspath(original_data_dir), '*.ppm'))
+    img_list = glob.glob(os.path.join(original_data_dir, '*.ppm'))
 
     gt = np.loadtxt(original_gt_dir, dtype=str)
     train_list, test_list = train_test_split(img_list, test_size=0.2)
